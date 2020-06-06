@@ -53,6 +53,9 @@ client.on('message', message => {
 	// Ignore not on servers
 	if (message.channel.type !== "text") return;
 
+	// Random "your gay" message (???)
+	if (Math.random() * 500 < 1) message.author.send("`your gay lol`");
+
 	// Ignore if not starting with prefix
 	if (message.content.indexOf(client.config.prefix) !== 0) return;
 
@@ -83,9 +86,9 @@ client.on('message', message => {
 client.on("voiceStateUpdate", (oldState, newState) => {
 	// If the user joined a channel
 	if (newState.channelID && !oldState.channelID) {
+		// Play a random audio sample that begins with the user's ID
 		fs.readdir("./assets/joinsounds/", (err, files) => {
 			if (err) return console.error(err);
-			// Play a random audio sample that begins with the user's ID
 			const regex = new RegExp(`^${newState.member.id}_[0-9]+\.mp3$`);
 			files = files.filter(file => regex.test(file));
 			const soundFile = utils.randItem(files);
@@ -106,5 +109,6 @@ client.on('ready', () => {
 
 client.login(process.env.TOKEN);
 
+// Ping itself every 15 minutes to keep it alive
 setInterval(() => https.get("https://mattymeme-reborn.herokuapp.com/"), 15 * 60 * 1000);
 
