@@ -8,7 +8,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const utils = require("./utils.js");
 
-const config = {
+client.config = {
 	prefix: "matty",
 	mattID: "168044647174635522",
 	confused: [
@@ -22,7 +22,8 @@ const config = {
 		"Try the help command",
 		"Computer says no.",
 		":thinking:"
-	]
+	],
+	memes: fs.readFileSync("./assets/memes.txt").toString().trim().split("\n")
 };
 
 
@@ -53,10 +54,10 @@ client.on('message', message => {
 	if (message.channel.type !== "text") return;
 
 	// Ignore if not starting with prefix
-	if (message.content.indexOf(config.prefix) !== 0) return;
+	if (message.content.indexOf(client.config.prefix) !== 0) return;
 
 	// Split into arguments
-	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+	const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
 
 	// Find and run command
@@ -67,7 +68,7 @@ client.on('message', message => {
 	} catch (err) {
 		if (err.code === 'MODULE_NOT_FOUND') {
 			// Invalid command, send a confused response
-			message.reply(utils.randItem(config.confused));
+			message.reply(utils.randItem(client.config.confused));
 		} else {
 			console.error(err);
 		}
