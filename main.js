@@ -3,6 +3,7 @@
 const process = require('process');
 const http = require('http');
 const fs = require('fs');
+const express = require('express');
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const utils = require("./utils.js");
@@ -23,6 +24,20 @@ const config = {
 		":thinking:"
 	]
 };
+
+
+/*
+ * Webpage
+ */
+
+const app = express();
+app.set("port", (process.env.PORT || 8001));
+app.use("/", express.static("public"));
+app.get("/", function(req, res) {
+    res.sendFile("public/index.html", {root : __dirname});
+}).listen(app.get("port"), function() {
+    console.log("Web server listening on port ", app.get("port"));
+});
 
 
 /*
