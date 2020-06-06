@@ -1,6 +1,7 @@
 'use strict';
 
 const process = require('process');
+const http = require('http');
 const fs = require('fs');
 const Discord = require("discord.js");
 const client = new Discord.Client();
@@ -88,4 +89,6 @@ client.on('ready', () => {
 });
 
 client.login(process.env.TOKEN);
+
+setInterval(() => http.get("https://mattymeme-reborn.herokuapp.com/"), 15 * 60 * 1000);
 
