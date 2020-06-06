@@ -70,7 +70,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 		fs.readdir("./assets/joinsounds/", (err, files) => {
 			if (err) return console.error(err);
 			// Play a random audio sample that begins with the user's ID
-			const regex = new RegExp(`^${config.mattID}_[0-9]+\.mp3$`);
+			const regex = new RegExp(`^${newState.member.id}_[0-9]+\.mp3$`);
 			files = files.filter(file => regex.test(file));
 			const soundFile = utils.randItem(files);
 			if (soundFile) utils.playFile(client, "./assets/joinsounds/" + soundFile, newState.channel);
