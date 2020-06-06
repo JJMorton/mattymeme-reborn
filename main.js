@@ -54,7 +54,7 @@ client.on('message', message => {
 	if (message.channel.type !== "text") return;
 
 	// Random "your gay" message (???)
-	if (Math.random() * 500 < 1) message.author.send("`your gay lol`");
+	if (Math.random() * 500 < 1) message.author.send("`Your gay lol`");
 
 	// Ignore if not starting with prefix
 	if (message.content.indexOf(client.config.prefix) !== 0) return;
@@ -69,7 +69,7 @@ client.on('message', message => {
 		console.log(`Sender: ${message.author.username}, Command: ${command}, Arguments: ${args.join(', ')}`);
 		file.run(client, message, args);
 	} catch (err) {
-		if (err.code === 'MODULE_NOT_FOUND') {
+		if (err.code === "MODULE_NOT_FOUND") {
 			// Invalid command, send a confused response
 			message.reply(utils.randItem(client.config.confused));
 		} else {
