@@ -3,19 +3,14 @@
 const utils = require("../utils.js");
 
 exports.run = (client, message, args) => {
-	if (!client.config.memes.length) return console.error("Nothing in memes.txt");
-	message.channel.send(utils.randItem(client.config.memes))
-		.then(reply => {
-			reply.react('🔀') // The :repeat: emoji
-				.then(() => {
-					const collector = reply.createReactionCollector(
-						(reaction, user) => !user.bot && reaction.emoji.name === '🔀',
-						{ time: 300000 }
-					);
-					collector.on("collect", r => r.message.edit(utils.randItem(client.config.memes)))
-				})
-				.catch(console.error);
-		})
-		.catch(console.error);
+
+	if (message.channel.type !== "text") {
+		return message.channel.send("You can only use this in a server text channel");
+	}
+
+	if (!client.config.memes.length) return console.error("assets/memes.txt is empty");
+
+	// Send a random meme, with the shuffle react option
+	utils.shuffleMessage(client, message.channel, () => utils.randItem(client.config.memes));
 };
 

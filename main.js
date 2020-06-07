@@ -57,7 +57,9 @@ client.on('message', message => {
 	if (Math.random() * 500 < 1) message.author.send("`Your gay lol`");
 
 	// Ignore if not starting with prefix
-	if (message.content.indexOf(client.config.prefix) !== 0) return;
+	if (message.content.toLowerCase().indexOf(client.config.prefix.toLowerCase()) !== 0) return;
+
+	message.channel.startTyping();
 
 	// Split into arguments
 	const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
@@ -76,6 +78,8 @@ client.on('message', message => {
 			console.error(err);
 		}
 	}
+
+	message.channel.stopTyping();
 });
 
 
