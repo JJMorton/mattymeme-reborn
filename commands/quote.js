@@ -5,7 +5,7 @@ const utils = require("../utils.js");
 // Fetches a random message sent by `member` in `channel`
 const getRandomMessage = (client, channel, member) => new Promise((resolve, reject) => {
 	channel.messages.fetch({limit: 100, around: member.lastMessageID}, false).then(messages => {
-		resolve(utils.randItem(messages.array().filter(m => m.author.id === member.id)));
+		resolve(utils.randItem(messages.array().filter(m => m.author.id === member.id && m.content != "")));
 	}).catch(reject);
 });
 
