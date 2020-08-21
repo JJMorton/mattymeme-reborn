@@ -23,8 +23,10 @@ client.config = {
 		"Computer says no.",
 		":thinking:"
 	],
-	memes: fs.readFileSync("./assets/memes.txt").toString().trim().split("\n")
+	assetsDir: `${__dirname}/assets/`
 };
+
+client.config.memes = fs.readFileSync(`${client.config.assetsDir}/memes.txt`).toString().trim().split("\n");
 
 
 /*
@@ -59,8 +61,6 @@ client.on('message', message => {
 	// Ignore if not starting with prefix
 	if (message.content.toLowerCase().indexOf(client.config.prefix.toLowerCase()) !== 0) return;
 
-	message.channel.startTyping();
-
 	// Split into arguments
 	const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
@@ -78,8 +78,6 @@ client.on('message', message => {
 			console.error(err);
 		}
 	}
-
-	message.channel.stopTyping();
 });
 
 
@@ -87,19 +85,41 @@ client.on('message', message => {
  * Joining sounds
  */
 
+let lastChannelJoined = null;
 client.on("voiceStateUpdate", (oldState, newState) => {
 	// If the user joined a channel
 	if (newState.channelID && !oldState.channelID) {
+		lastChannelJoined = newState.channel;
 		// Play a random audio sample that begins with the user's ID
-		fs.readdir("./assets/joinsounds/", (err, files) => {
-			if (err) return console.error(err);
-			const regex = new RegExp(`^${newState.member.id}_[0-9]+\.mp3$`);
-			files = files.filter(file => regex.test(file));
-			const soundFile = utils.randItem(files);
-			if (soundFile) utils.playFile(client, "./assets/joinsounds/" + soundFile, newState.channel);
-		});
+		utils.matchFiles(`${client.config.assetsDir}/joinsounds/`, new RegExp(`^${newState.member.id}_[0-9]+\.mp3$`)).then(files => {
+			if (files.length) utils.playFile(client, utils.randItem(files), newState.channel);
+		}).catch(console.error);
 	}
 });
+
+
+/*
+ * Random cave sounds
+ */
+
+(function playCaveSound(didPlay) {
+	// If a call was occupied last time, wait longer before trying again so as not to spam
+	const minTime = 1000 * 60 * 60 * (didPlay ? 2 : 1);
+	const maxTime = 1000 * 60 * 60 * (didPlay ? 4 : 2);
+	const delay = Math.random() * (maxTime - minTime) + minTime;
+
+	setTimeout(() => {
+		console.log("Playing cave sound if a call is occupied...");
+		const shouldPlay = lastChannelJoined && lastChannelJoined.members.size > 0;
+		if (shouldPlay) {
+			utils.matchFiles(`${client.config.assetsDir}/cave/`, /^Cave[1-9][0-9]*\.mp3$/).then(files => {
+				if (files.length) utils.playFile(client, utils.randItem(files), lastChannelJoined);
+			}).catch(console.error);
+		}
+		playCaveSound(shouldPlay);
+	}, delay);
+
+}(false));
 
 
 /*

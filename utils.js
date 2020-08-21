@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require("fs");
+
 /*
  * Some common functions that are used in multiple different commands
  */
@@ -11,12 +13,23 @@ exports.randItem = arr => arr[Math.floor(Math.random() * arr.length)];
 exports.playFile = (client, filename, channel) => {
 	if (!channel.joinable) return;
 	channel.join().then(connection => {
+		console.log(`Playing file "${filename}"...`);
 		const dispatcher = connection.play(filename, {seek: 0})
 		dispatcher.on("speaking", speaking => {
 			if (!speaking) connection.disconnect();
 		});
 		dispatcher.on("error", console.error);
 	}).catch(console.error);
+};
+
+exports.matchFiles = (dir, regex) => {
+	return new Promise((resolve, reject) => {
+		fs.readdir(dir, (err, files) => {
+			if (err) return reject(new Error(`Unable to read files in directory ${dir}`));
+			files = files.filter(file => regex.test(file));
+			resolve(files.map(file => dir + "/" + file));
+		});
+	});
 };
 
 // Sends a message created by `messageConstructor` to channel.
