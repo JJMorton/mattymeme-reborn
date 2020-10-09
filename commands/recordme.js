@@ -12,7 +12,11 @@ exports.run = (client, message, args) => {
 	const mentions = message.mentions.members;
 	if (!member.voice.channel) return message.reply("Join a voice channel first");
 	if (!member.voice.channel.joinable) return message.reply("Sorry, I can't join that voice channel");
+
 	member.voice.channel.join().then(connection => {
+
+		// Playing a file seems to fix the issue where no audio is received
+		connection.play("assets/message.mp3", {seek: 0});
 
 		const maxRecordingLength = 15000;
 
