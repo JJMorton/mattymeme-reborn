@@ -1,6 +1,6 @@
 'use strict';
 
 exports.run = (client, message, args) => {
-	message.reply("pong!").catch(console.error);
+	message.channel.send("bazinga").catch(console.error);
 };
 
