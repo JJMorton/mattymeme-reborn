@@ -8,7 +8,7 @@ exports.run = (client, message, args) => {
 		.setTitle("MattyMeme")
 		.setDescription(
 			`[Funny website](https://mattymeme-reborn.herokuapp.com)\n` +
-			`[Invite to your server](https://discord.com/oauth2/authorize?client_id=718894299328020611&scope=bot)\n` +
+			`[Invite to your server](https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot)\n` +
 			`Source on [GitHub](https://github.com/JJMorton/mattymeme-reborn)\n` +
 			`Uptime: ${utils.formatTime(client.uptime)}\n` +
 			`\n` +
