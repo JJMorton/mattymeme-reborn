@@ -25,7 +25,7 @@ exports.run = (client, message, args) => {
 	member.voice.channel.join().then(connection => {
 
 		// Playing a file seems to fix the issue where no audio is received
-		connection.play("assets/message.mp3", {seek: 0});
+		connection.play(`${client.config.assetsDir}/message.mp3`, {seek: 0});
 
 		const maxRecordingLength = 30000;
 
