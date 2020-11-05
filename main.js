@@ -18,10 +18,15 @@ client.config = {
 		"What are you saying?",
 		"That means nothing to me",
 		"Speak a language I understand",
-		"Are you asking for a fight?",
-		"Try the help command",
-		"Computer says no.",
-		":thinking:"
+		"You want a fight?",
+		":thinking:",
+		"You what mate",
+		"nah",
+		"how",
+		"problem?",
+		"did I say you could speak?",
+		":moyai:",
+		":flushed:"
 	],
 	assetsDir: `${__dirname}/assets/`
 };
