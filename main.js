@@ -109,8 +109,8 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 
 (function playCaveSound(didPlay) {
 	// If a call was occupied last time, wait longer before trying again so as not to spam
-	const minTime = 1000 * 60 * 60 * (didPlay ? 2 : 1);
-	const maxTime = 1000 * 60 * 60 * (didPlay ? 4 : 2);
+	const minTime = 1000 * 60 * 60 * (didPlay ? 3 : 2);
+	const maxTime = 1000 * 60 * 60 * (didPlay ? 4 : 3);
 	const delay = Math.random() * (maxTime - minTime) + minTime;
 
 	setTimeout(() => {
