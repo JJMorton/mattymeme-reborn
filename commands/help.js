@@ -11,18 +11,12 @@ exports.run = (client, message, args) => {
 			`[Invite to your server](https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot)\n` +
 			`Source on [GitHub](https://github.com/JJMorton/mattymeme-reborn)\n` +
 			`Uptime: ${utils.formatTime(client.uptime)}\n` +
-			`\n` +
-			`__**The following commands are available:**__`
+			`Used on ${client.guilds.cache.size} servers\n`
 		)
-		.addFields([
-			{ name: `${client.config.prefix} ping`, value: "pong" },
-			{ name: `${client.config.prefix} meme`, value: "Send a random matty meme, shuffle with the react button" },
-			{ name: `${client.config.prefix} quote`, value: "Quote a random message recently sent by Matt" },
-			{ name: `${client.config.prefix} cd`, value: "Play a variation of 'cd meme' in the voice channel" },
-			{ name: `${client.config.prefix} cave`, value: "Play a cave sound in the voice channel" },
-			{ name: `${client.config.prefix} recordme [effect]`, value: "Send a recording of yourself in the chat\nValid effects: `loud`, `reverse`" },
-			{ name: `${client.config.prefix} help`, value: "Send this help menu" }
-		])
+		.addFields(client.config.commands.map(c => ({
+			name: client.config.prefix + c.name + ' ' + (c.args || []).map(x => `[${x}]`).join(' '),
+			value: c.description
+		})))
 		.setThumbnail(client.user.displayAvatarURL({ size: 64, dynamic: true }))
 		.setColor("#dd3333");
 

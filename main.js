@@ -7,10 +7,21 @@ const express = require('express');
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const utils = require("./utils.js");
+const db = require("./db.js");
 
 client.config = {
-	prefix: "matty",
+	prefix: "matty ",
 	mattID: "168044647174635522",
+	commands: [
+		{ name: "ping", description: "pong" },
+		{ name: "meme", description: "Send a random matty meme, shuffle with the react button" },
+		{ name: "quote", description: "Quote a random message recently sent by Matt" },
+		{ name: "cd", description: "Play a variation of 'cd meme' in the voice channel" },
+		{ name: "cave", description: "Play a cave sound in the voice channel" },
+		{ name: "recordme", args: ["effect"], description: "Send a recording of yourself in the chat\nValid effects: `loud`, `reverse`" },
+		{ name: "stats", description: "View how many times you've used commands" },
+		{ name: "help", description: "Send this help menu" }
+	],
 	confused: [
 		"huh?",
 		"What?",
@@ -32,6 +43,12 @@ client.config = {
 };
 
 client.config.memes = fs.readFileSync(`${client.config.assetsDir}/memes.txt`).toString().trim().split("\n");
+
+/*
+ * Database for command statistics
+ */
+
+db.init(client);
 
 
 /*
@@ -69,20 +86,18 @@ client.on('message', message => {
 	// Split into arguments
 	const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
-
-	// Find and run command
-	try {
+	if (client.config.commands.find(c => c.name === command)) {
 		const file = require(`./commands/${command}.js`);
 		console.log(`Sender: ${message.author.username}, Command: ${command}, Arguments: ${args.join(', ')}`);
-		file.run(client, message, args);
-	} catch (err) {
-		if (err.code === "MODULE_NOT_FOUND") {
-			// Invalid command, send a confused response
-			message.reply(utils.randItem(client.config.confused));
-		} else {
-			console.error(err);
-		}
+		db.increment(message.author.id, command).then(() => {
+			file.run(client, message, args);
+		});
+	} else {
+		// Invalid command, send a confused response
+		db.increment(message.author.id, "unknown");
+		message.reply(utils.randItem(client.config.confused));
 	}
+
 });
 
 
@@ -140,4 +155,10 @@ client.login(process.env.TOKEN);
 
 // Ping itself every 15 minutes to keep it alive
 setInterval(() => https.get("https://mattymeme-reborn.herokuapp.com/"), 15 * 60 * 1000);
+
+// Clean up on exit
+process.on("beforeExit", () => {
+	console.log("Cleaning up...");
+	client.destroy();
+});
 
