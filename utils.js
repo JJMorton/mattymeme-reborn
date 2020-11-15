@@ -52,19 +52,18 @@ exports.shuffleMessage = async (client, channel, messageConstructor) => {
 
 // convert ms to an appropriate unit of time
 exports.formatTime = ms => {
-	const seconds = (ms / 1000).toFixed(1);
-	const minutes = (ms / (1000 * 60)).toFixed(1);
-	const hours = (ms / (1000 * 60 * 60)).toFixed(1);
-	const days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
-
-	if (seconds < 60) {
-		return seconds + " seconds";
-	} else if (minutes < 60) {
-		return minutes + " minutes";
-	} else if (hours < 24) {
-		return hours + " hours";
-	} else {
-		return days + " days";
+	const d = new Date(ms);
+	const periods = [
+		(ms / (1000 * 60 * 60 * 24)), // days
+		(ms / (1000 * 60 * 60)) % 24, // hours
+		(ms / (1000 * 60)) % 60, // minutes
+		(ms / 1000) % 60 // seconds
+	].map(Math.floor);
+	const units = [ "day", "hour", "minute", "second" ];
+	const sections = [];
+	for (let i = 0; i < periods.length && sections.length < 2; i++) {
+		if (periods[i] > 0) sections.push(periods[i] + " " + units[i] + (periods[i] === 1 ? "" : "s"));
 	}
+	return sections.join(" and ");
 };
 
