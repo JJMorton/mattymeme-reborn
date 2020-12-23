@@ -78,7 +78,7 @@ client.on('message', message => {
 	if (message.channel.type !== "text") return;
 
 	// Random "your gay" message (???)
-	if (Math.random() * 500 < 1) message.author.send("`Your gay lol`");
+	if (Math.random() * 5000 < 1) message.author.send(utils.randItem(["your're not funy", "you'are very not amuse", "yo're not haharious"]));
 
 	// Ignore if not starting with prefix
 	if (message.content.toLowerCase().indexOf(client.config.prefix.toLowerCase()) !== 0) return;
