@@ -71,6 +71,8 @@ app.get("/", function(req, res) {
 
 client.on('message', message => {
 
+	db.incrementMessage(message.author.id, message.guild.id);
+
 	// Ignore bots
 	if (message.author.bot) return;
 
@@ -89,12 +91,12 @@ client.on('message', message => {
 	if (client.config.commands.find(c => c.name === command)) {
 		const file = require(`./commands/${command}.js`);
 		console.log(`Sender: ${message.author.username}, Command: ${command}, Arguments: ${args.join(', ')}`);
-		db.increment(message.author.id, command).then(() => {
+		db.incrementCommand(message.author.id, message.guild.id, command).then(() => {
 			file.run(client, message, args);
 		});
 	} else {
 		// Invalid command, send a confused response
-		db.increment(message.author.id, "unknown");
+		db.incrementCommand(message.author.id, message.guild.id, "unknown");
 		message.reply(utils.randItem(client.config.confused));
 	}
 
